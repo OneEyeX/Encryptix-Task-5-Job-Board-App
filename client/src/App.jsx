@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Footer, Navbar } from "./components";
 
-function App() {
-  const [count, setCount] = useState(0)
 
+// 
+function Layout() {
+  const user=true;
+  const location = useLocation();
+
+  return user?    <Outlet/>:<Navigate to='user-auth' state={{from: location}} replace />;
+  
+}
+// 
+function App() { 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main>
+      <Navbar/>
+      <Routes>
+        {/* If user is authneticated */}
+        <Route element={<Layout/>}>
+
+          <Route 
+            path="/" 
+            element={
+              <Navigate to='/find-jobs' replace={true}/>
+              }
+          />
+          <Route path='/find-jobs' element={<FindJobs/>} />
+          <Route path='/companies' element={<Companies/>} />
+          <Route
+            path={
+              user?.user?.accountType === "seeker"
+                ? "/user-profile"
+                : "user-profile/:id"
+            }
+            element={<UserProfile/>}
+          />
+
+          <Route  path={"/company-profile"} element={<CompanyProfile/>} />
+          <Route path={"/company-profile/:id"} element={<CompanyProfile/>} />
+          <Route path={"/upload-job"} element={<UploadJob/>} />
+          <Route path={"/job-detail/:id"} element={<JobDetail/>} />
+
+        </Route>
+        {/* if user is not auth */}
+        <Route path={"/about-us"} element={<About/>} />
+        <Route path={"/user-auth"} element={<AuthPage/>} />
+      </Routes>
+      {/* dispaly footer only if user is auth */}
+      {user && <Footer/>}
+    </main>
+  );
 }
 
 export default App
