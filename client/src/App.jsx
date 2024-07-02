@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Footer, Navbar } from "./components";
 import {
@@ -12,12 +13,16 @@ import {
 } from "./pages";
 
 // 
+
 function Layout() {
-  const user=false;
+  const { user } = useSelector((state) => state.user);
   const location = useLocation();
 
-  return user?    <Outlet/>:<Navigate to='user-auth' state={{from: location}} replace />;
-  
+  return user?.token ? (
+    <Outlet />
+  ) : (
+    <Navigate to='/user-auth' state={{ from: location }} replace />
+  );
 }
 // 
 function App() { 
