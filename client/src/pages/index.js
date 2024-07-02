@@ -8,6 +8,13 @@ import UploadJob from "./UploadJob";
 import UserProfile from "./UserProfile";
 
 export {
-    About, AuthPage, Companies, CompanyProfile, FindJobs, JobDetail, UploadJob, UserProfile
+    About,
+    AuthPage,
+    Companies,
+    CompanyProfile,
+    FindJobs,
+    JobDetail,
+    UploadJob,
+    UserProfile
 };
 

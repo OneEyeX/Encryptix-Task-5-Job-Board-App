@@ -1,10 +1,19 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Footer, Navbar } from "./components";
-
+import {
+  About,
+  AuthPage,
+  Companies,
+  CompanyProfile,
+  FindJobs,
+  JobDetail,
+  UploadJob,
+  UserProfile,
+} from "./pages";
 
 // 
 function Layout() {
-  const user=true;
+  const user=false;
   const location = useLocation();
 
   return user?    <Outlet/>:<Navigate to='user-auth' state={{from: location}} replace />;
@@ -12,6 +21,8 @@ function Layout() {
 }
 // 
 function App() { 
+  // update here
+  const user={};
   return (
     <main>
       <Navbar/>
