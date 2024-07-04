@@ -3,7 +3,6 @@ import { BiBriefcaseAlt2 } from "react-icons/bi";
 import { BsStars } from "react-icons/bs";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { CustomButton, JobCard, ListBox } from "../components";
 import Header from "../components/Header";
 import { experience, jobTypes, jobs } from "../utils/data";

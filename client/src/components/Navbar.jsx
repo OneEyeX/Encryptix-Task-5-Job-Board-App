@@ -1,5 +1,5 @@
 import { Menu, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import { Fragment, React, useState } from "react";
 import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
 import { BiChevronDown } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
@@ -111,7 +111,7 @@ const Navbar = () => {
             <nav className='container mx-auto flex items-center justify-between p-5'>
             <div>
                 <Link to='/' className='text-blue-600 font-bold text-xl'>
-                Job<span className='text-[#1677cccb]'>Finder</span>
+                Job<span className='text-[#1677cccb]'>Board</span>
                 </Link>
             </div>
 
