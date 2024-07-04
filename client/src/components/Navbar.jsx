@@ -4,10 +4,9 @@ import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
 import { BiChevronDown } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
 import { HiMenuAlt3 } from "react-icons/hi";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { users } from "../utils/data";
 import CustomButton from "./CustomButton";
-// import { useSelector } from "react-redux";
 
 function MenuList({ user, onClick }) {
     const handleLogout = () => {};
@@ -97,8 +96,8 @@ function MenuList({ user, onClick }) {
     );
 }
 const Navbar = () => {
-    // const user = useSelector((state) => state.user);
-    const user = users[0];
+    // const user = users[0];
+    const user = useSelector((state) => state.user);
     const [isOpen, setIsOpen] = useState(false);
 
     const handleCloseNavbar = () => {
