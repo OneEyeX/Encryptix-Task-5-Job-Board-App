@@ -36,7 +36,7 @@ const FindJobs = () => {
   const filterExperience = async (e) => {
     setFilterExp(e);
   };
-
+console.log(filterJobTypes);
   return (
     <div>
       <Header
