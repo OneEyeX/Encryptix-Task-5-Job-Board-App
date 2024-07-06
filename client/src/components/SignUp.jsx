@@ -3,6 +3,8 @@ import React, { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { Login } from "../redux/userSlice";
+import { apiRequest } from "../utils";
 import CustomButton from "./CustomButton";
 import TextInput from "./TextInput";
 
@@ -27,7 +29,48 @@ const SignUp = ({ open, setOpen }) => {
 
   const closeModal = () => setOpen(false);
 
-  const onSubmit = () => {};
+  const onSubmit = async (data) => {
+    let URL = null;
+    // if (isRegister) {
+    //   if (accountType === "seeker") {
+    //     URL ="auth/register";
+    //   }else{
+    //     URL ="companies/register";
+    //   }
+    // }else{
+    //   if (accountType === "seeker") {
+    //     URL ="auth/login";
+    //   }else{
+    //     URL ="companies/login";
+    //   }
+    // }
+    const baseUrl = isRegister ? "register" : "login";
+    const userType = accountType === "seeker" ? "auth" : "companies";
+    URL = `${userType}/${baseUrl}`;
+    try {
+      const res = await apiRequest({
+        url: URL,
+        data:data,
+        method: 'POST',
+      });
+
+      if (res?.status ==="failed"){
+        setErrMsg(res?.message);
+      }
+      else{
+        setErrMsg("");
+        const data ={
+          token:res?.token,
+          ...res?.user
+        };
+        dispatch(Login(data));
+        localStorage.setItem("userInfo",JSON.stringify(data));
+        window.location.replace(from);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
