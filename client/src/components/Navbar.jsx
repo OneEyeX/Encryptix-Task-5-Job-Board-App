@@ -16,7 +16,9 @@ function MenuList({ user, onClick }) {
         dispatch(Logout());
         window.location.replace("/");
     };
+    // const userinfo = JSON.parse(localStorage.getItem('userInfo'));
 
+    // console.log("profile img",user?.profileUrl);
     return (
         <div>
         <Menu as='div' className='inline-block text-left'>
@@ -105,7 +107,7 @@ const Navbar = () => {
     // const user = users[0];
     const {user} = useSelector((state) => state.user);
     const [isOpen, setIsOpen] = useState(false);
-
+    console.log("compte",user?.profileUrl);
     const handleCloseNavbar = () => {
         setIsOpen((prev) => !prev);
     };
@@ -139,6 +141,7 @@ const Navbar = () => {
                 {!user?.token ? (
                 <Link to='/user-auth'>
                     <CustomButton
+
                     title='Sign In'
                     containerStyles='text-blue-600 py-1.5 px-5 focus:outline-none hover:bg-blue-700 hover:text-white rounded-full text-base border border-blue-600'
                     />

@@ -95,29 +95,33 @@ export const updateCompanyProfile = async (req, res, next) => {
     const { name, contact, location, profileUrl, about } = req.body;
 
     try {
-        // validation
+        // Validation
         if (!name || !location || !about || !contact || !profileUrl) {
-            next("Please Provide All Required Fields");
-            return;
+            return next("Please Provide All Required Fields");
         }
 
         const id = req.body.user.userId;
 
-        if (!mongoose.Types.ObjectId.isValid(id))
+        if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(404).send(`No Company with id: ${id}`);
+        }
 
         const updateCompany = {
             name,
             contact,
             location,
-            profileUrl,
+            // profileUrl,
+            profileUrl: profileUrl.secure_url || profileUrl.url, // Use only the URL part of the profileUrl object
             about,
-            _id: id,
         };
 
         const company = await Companies.findByIdAndUpdate(id, updateCompany, {
             new: true,
         });
+
+        if (!company) {
+            return res.status(404).send(`No Company with id: ${id}`);
+        }
 
         const token = company.createJWT();
 
@@ -130,10 +134,53 @@ export const updateCompanyProfile = async (req, res, next) => {
             token,
         });
     } catch (error) {
-        console.log(error);
-        res.status(404).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: error.message });
     }
 };
+// export const updateCompanyProfile = async (req, res, next) => {
+//     const { name, contact, location, profileUrl, about } = req.body;
+
+//     try {
+//         // validation
+//         if (!name || !location || !about || !contact || !profileUrl) {
+//             next("Please Provide All Required Fields");
+//             return;
+//         }
+
+//         const id = req.body.user.userId;
+
+//         if (!mongoose.Types.ObjectId.isValid(id))
+//             return res.status(404).send(`No Company with id: ${id}`);
+
+//         const updateCompany = {
+//             name,
+//             contact,
+//             location,
+//             profileUrl,
+//             about,
+//             _id: id,
+//         };
+
+//         const company = await Companies.findByIdAndUpdate(id, updateCompany, {
+//             new: true,
+//         });
+
+//         const token = company.createJWT();
+
+//         company.password = undefined;
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Company Profile Updated Successfully",
+//             company,
+//             token,
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(404).json({ message: error.message });
+//     }
+// };
 
 export const getCompanyProfile = async (req, res, next) => {
     try {

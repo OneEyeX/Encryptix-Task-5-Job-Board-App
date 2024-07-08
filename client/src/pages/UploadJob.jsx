@@ -1,9 +1,13 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CustomButton, JobCard, JobTypes, TextInput } from "../components";
-import { jobs } from "../utils/data";
+import { useSelector } from "react-redux";
+import { CustomButton, JobCard, JobTypes, Loading, TextInput } from "../components";
+import { apiRequest } from "../utils";
 
 const UploadJob = () => {
+  const { user } = useSelector((state) => state.user); 
+  // const userId = user._id; // Check if `user` is defined first
+  console.log(user);
   const {
     register,
     handleSubmit,
@@ -16,9 +20,61 @@ const UploadJob = () => {
   });
 
   const [errMsg, setErrMsg] = useState("");
-  const [jobTitle, setJobTitle] = useState("Full-Time");
+  // const [jobTitle, setJobTitle] = useState("Full-Time");
+  const [jobType, setJobType] = useState("Full-Time");
+  const [isLoading, setIsLoading] = useState(false);
+  const [recentPost, setRecentPost] = useState([]);
+  
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrMsg(null);
+    const newData = {
+      ...data,
+      jobType: jobType
+    };
+    console.log(user?.token);
+    try {
+      const res = await apiRequest({
+        url: "/jobs/upload-job",
+        token:user?.token,
+        data: newData,
+        method: "POST",
+      });
+      if (res.status === "failed") {
+        setErrMsg({...res});
+      }else{
+        setErrMsg({
+          status: "success",
+          message: res.message
+        });
+        // setTimeout(() =>{
+        //   window.location.reload();
+        // },2000);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  const getRecentPost = async()=>{
+    try {
+      const id = user?._id;
+      const res = await apiRequest({
+        url: "/companies/get-company/" + id,
+        method: "GET",
+      });
+      setRecentPost(res?.data?.jobPosts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(()=>{
+    getRecentPost()
+  },[]);
 
   return (
     <div className='container mx-auto flex flex-col md:flex-row gap-8 2xl:gap-14 bg-[#f7fdfd] px-5'>
@@ -45,7 +101,7 @@ const UploadJob = () => {
             <div className='w-full flex gap-4'>
               <div className={`w-1/2 mt-2`}>
                 <label className='text-gray-600 text-sm mb-1'>Job Type</label>
-                <JobTypes jobTitle={jobTitle} setJobTitle={setJobTitle} />
+                <JobTypes jobTitle={jobType} setJobTitle={setJobType} />
               </div>
 
               <div className='w-1/2'>
@@ -122,13 +178,13 @@ const UploadJob = () => {
 
             <div className='flex flex-col'>
               <label className='text-gray-600 text-sm mb-1'>
-                Core Responsibilities
+                Requirements
               </label>
               <textarea
                 className='rounded border border-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-base px-4 py-2 resize-none'
                 rows={4}
                 cols={6}
-                {...register("resposibilities")}
+                {...register("requirements")}
               ></textarea>
             </div>
 
@@ -138,11 +194,16 @@ const UploadJob = () => {
               </span>
             )}
             <div className='mt-2'>
-              <CustomButton
-                type='submit'
-                containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
-                title='Sumbit'
-              />
+              {isLoading ?(
+                <Loading/>
+              )
+              :(
+                <CustomButton
+                  type='submit'
+                  containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
+                  title='Sumbit'
+                />
+              )}
             </div>
           </form>
         </div>
@@ -151,8 +212,14 @@ const UploadJob = () => {
         <p className='text-gray-500 font-semibold'>Recent Job Post</p>
 
         <div className='w-full flex flex-wrap gap-6'>
-          {jobs.slice(0, 4).map((job, index) => {
-            return <JobCard job={job} key={index} />;
+          {recentPost.slice(0, 4).map((job, index) => {
+            const data ={
+              name: user?.name,
+              email: user?.email,
+              logo: user?.profileUrl,
+              ...job,
+            };
+            return <JobCard job={data} key={index} />;
           })}
         </div>
       </div>

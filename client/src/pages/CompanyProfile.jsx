@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, React, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { FiEdit3, FiPhoneCall, FiUpload } from "react-icons/fi";
@@ -7,10 +7,15 @@ import { HiLocationMarker } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { CustomButton, JobCard, Loading, TextInput } from "../components";
-import { companies, jobs } from "../utils/data";
+import { Login } from "../redux/userSlice";
+import { apiRequest, handleFileUpload } from "../utils";
 
 const CompnayForm = ({ open, setOpen }) => {
   const { user } = useSelector((state) => state.user);
+  // Retrieve token from localStorage
+  // const userinfo = JSON.parse(localStorage.getItem('userInfo'));
+  // const token = userinfo ? userinfo.token : null;
+  // console.log(token);
   const {
     register,
     handleSubmit,
@@ -19,20 +24,62 @@ const CompnayForm = ({ open, setOpen }) => {
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    defaultValues: { ...user?.user },
+    defaultValues: { ...user },
   });
 
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
   const [uploadCv, setUploadCv] = useState("");
+  const [isLoading,setIsLoading]=useState(false);
+  const [errMsg,setErrMsg]=useState({
+    status:false,
+    message:"",
+  });
+  
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    setErrMsg(null);
+    const uri=profileImage && (await handleFileUpload(profileImage));
+    const newData = uri? { ...data, profileUrl:uri }: data;
+    // console.log(user?.token);
+    try {
+      const res = await apiRequest({
+        url:"/companies/update-company", 
+        // token: token,
+        token: user?.token,
+        data: newData,
+        method: "PUT",
+      });
 
-  const onSubmit = () => {};
+      setIsLoading(false);
+
+      // console.log(res);
+      if (res.status==="failed") {
+        setErrMsg({...res});
+      }else{
+        setErrMsg({
+          status: "success",
+          message: res.message,
+        });
+        dispatch(Login(data));
+        localStorage.setItem("userInfo",JSON.stringify(data));
+
+        setTimeout(()=>{
+          window.location.reload();
+        },1500);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+
+  };
 
   const closeModal = () => setOpen(false);
 
   return (
     <>
-      <Transition appear show={opener ?? false} as={Fragment}>
+      <Transition appear show={open ?? false} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -139,11 +186,19 @@ const CompnayForm = ({ open, setOpen }) => {
                     </div>
 
                     <div className='mt-4'>
-                      <CustomButton
-                        type='submit'
-                        containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
-                        title={"Submit"}
-                      />
+                      {
+                        isLoading ?(
+                          <Loading/>
+                        )
+                        : 
+                        (
+                        <CustomButton
+                          type='submit'
+                          containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
+                          title={"Submit"}
+                        />
+                      ) 
+                      }
                     </div>
                   </form>
                 </Dialog.Panel>
@@ -163,10 +218,42 @@ const CompanyProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
+
+  const fetchCompany=async()=>{
+    setIsLoading(true);
+    let id = null;
+    if (params.id && params.id !== undefined) {
+      id = params.id;
+    }else{
+      id=user?._id;
+    }
+
+    try {
+      const res = await apiRequest({
+        url:"/companies/get-company/"+id,
+        method: "GET",
+      });
+      console.log("BA3");
+      console.log(res);
+      setInfo(res?.data);
+      console.log(info);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
+  // useEffect(() => {
+  //   setInfo(companies[parseInt(params?.id) - 1 ?? 0]);
+  //   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  // }, []);
   useEffect(() => {
-    setInfo(companies[parseInt(params?.id) - 1 ?? 0]);
+    const id = parseInt(params?.id);
+    // setInfo(companies[id ? id - 1 : 0]);
+    fetchCompany();
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, []);
+}, []);
 
   if (isLoading) {
     return <Loading />;
@@ -181,7 +268,7 @@ const CompanyProfile = () => {
           </h2>
 
           {user?.user?.accountType === undefined &&
-            info?._id === user?.user?._id && (
+            info?._id === user?._id && (
               <div className='flex items-center justify-center py-5 md:py-0 gap-4'>
                 <CustomButton
                   onClick={() => setOpenForm(true)}
@@ -222,10 +309,12 @@ const CompanyProfile = () => {
         <p>Jobs Posted</p>
 
         <div className='flex flex-wrap gap-3'>
-          {jobs?.map((job, index) => {
+          {/* {jobs?.map((job, index) => { */}
+          {info?.jobPosts?.map((job, index) => {
             const data = {
               name: info?.name,
               email: info?.email,
+              logo: info?.profileUrl,
               ...job,
             };
             return <JobCard job={data} key={index} />;

@@ -64,6 +64,7 @@ const SignUp = ({ open, setOpen }) => {
           ...res?.user
         };
         dispatch(Login(data));
+        // localStorage.clear();
         localStorage.setItem("userInfo",JSON.stringify(data));
         window.location.replace(from);
       }
