@@ -1,28 +1,25 @@
-// ERROR MIDDLEWARE | NEXT FUNCTION
 const errorMiddleware = (err, req, res, next) => {
-    const defaultError = {
-        statusCode: 404,
-        success: "Failed",
-        message: err,
-    };
-    if (err.name === "ValidationError") {
-        defaultError.statusCode = 404;
-        defaultError.message = Object.values(err, errors)
-            .map((el) => el.message)
-            .join(",");
-    };
+    let statusCode = err.statusCode || 500;
+    let message = err.message || "Internal Server Error";
 
-    // duplicate error message
-    if (err.code && err.code === 11000) {
-        defaultError.statusCode = 404;
-        defaultError.message = `${Object.values(err.keyValue
-        )} field has to be unique`
+    // Handle mongoose validation errors
+    if (err.name === "ValidationError") {
+        statusCode = 400; // Bad Request
+        const errors = Object.values(err.errors).map((el) => el.message);
+        message = errors.join(", ");
     }
 
-    res.status(defaultError.statusCode).json({
-        success: defaultError.success,
-        message: defaultError.message,
-    })
+    // Handle duplicate key error (MongoDB)
+    if (err.code === 11000) {
+        statusCode = 400; // Bad Request
+        const fieldName = Object.keys(err.keyValue)[0];
+        message = `${fieldName} field must be unique`;
+    }
+
+    res.status(statusCode).json({
+        success: false,
+        error: message,
+    });
 };
 
 export default errorMiddleware;

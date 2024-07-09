@@ -9,7 +9,10 @@ const jobSchema = new mongoose.Schema(
         salary: { type: Number, required: [true, "Salary is required"] },
         vacancies: { type: Number },
         experience: { type: Number, default: 0 },
-        detail: [{ desc: { type: String }, requirements: { type: String } }],
+        detail: [{
+            desc: { type: String, required: true },
+            requirements: { type: String, required: true }
+        }],
         application: [{ type: Schema.Types.ObjectId, ref: "Users" }],
     },
     { timestamps: true }

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Users from "../models/userModel.js";
+
 export const updateUser = async (req, res, next) => {
     const {
         firstName,
@@ -14,13 +15,13 @@ export const updateUser = async (req, res, next) => {
 
     try {
         if (!firstName || !lastName || !email || !contact || !jobTitle || !about) {
-            next("Please enter all required fields");
+            return next("Please enter all required fields");
         }
 
         const id = req.body.user.userId;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).send(`no such user with this id: ${id}`);
+            return res.status(404).send(`No user with id: ${id}`);
         }
 
         const updateUser = {
@@ -29,14 +30,16 @@ export const updateUser = async (req, res, next) => {
             email,
             contact,
             location,
-            // profileUrl,
-            profileUrl: profileUrl.secure_url || profileUrl.url, // Use only the URL part of the profileUrl object
+            profileUrl: profileUrl?.secure_url || profileUrl?.url, // Ensure profileUrl exists before accessing properties
             jobTitle,
             about,
-            _id: id,
         };
 
         const user = await Users.findByIdAndUpdate(id, updateUser, { new: true });
+
+        if (!user) {
+            return res.status(404).send(`No user with id: ${id}`);
+        }
 
         const token = user.createJWT();
         user.password = undefined;
@@ -48,35 +51,39 @@ export const updateUser = async (req, res, next) => {
             token,
         });
 
-
-
     } catch (error) {
-        console.log(error);
-        res.status(404).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: error.message });
     }
 };
+
 export const getUser = async (req, res, next) => {
     try {
         const id = req.body.user.userId;
-        const user = await Users.findById({ _id: id });
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).send(`No user with id: ${id}`);
+        }
+
+        const user = await Users.findById(id).select('-password');
+
         if (!user) {
-            return res.status(200).send({
+            return res.status(404).send({
                 message: "User not found",
                 success: false,
             });
         }
-        user.password = undefined;
-        return res.status(200).send({
+
+        res.status(200).json({
             success: true,
-            user: user,
+            user,
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).send({
-            message: "auth error",
+            message: "Auth error",
             success: false,
             error: error.message,
         });
     }
 };
-

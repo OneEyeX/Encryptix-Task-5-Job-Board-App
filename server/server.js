@@ -1,4 +1,3 @@
-// import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -9,33 +8,29 @@ import dbConnection from './dbConfig/dbConnection.js';
 import errorMiddleware from './middlewares/errorsMiddleware.js';
 import router from './routes/index.js';
 
-dotenv.config()
+dotenv.config();
 
 const app = express();
-
 const PORT = process.env.PORT || 8800;
 
-// MONGODB Connection
+// MongoDB Connection
 dbConnection();
 
-// middleware
+// Middleware
 app.use(cors());
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(xss());
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(mongoSanitize());
-app.use(express.json({ limit: "100mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
 
-app.use(morgan("dev"));
-
-// 
+// Routes
 app.use(router);
 
-// use middleware
+// Error Middleware
 app.use(errorMiddleware);
+
+// Start server
 app.listen(PORT, () => {
-    console.log(`Dev server is listening on port ${PORT}`);
-}); 
+    console.log(`Server is listening on port ${PORT}`);
+});

@@ -3,7 +3,6 @@ import userSlice from "./userSlice";
 
 const rootReducer = combineReducers({
   user: userSlice,
-  // user: "",
 });
 
-export { rootReducer };
+export default rootReducer;

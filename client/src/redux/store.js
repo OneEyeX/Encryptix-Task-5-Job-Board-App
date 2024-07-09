@@ -1,17 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-
-import {
-    useDispatch as useAppDispatch,
-    useSelector as useAppSelector,
-} from "react-redux";
-import { rootReducer } from "./rootReducer";
+import { useDispatch as useAppDispatch, useSelector as useAppSelector } from "react-redux";
+import rootReducer from "./rootReducer"; // Assuming rootReducer is the default export
 
 const store = configureStore({
     reducer: rootReducer,
 });
 
-const { dispatch } = store;
+const useDispatch = useAppDispatch;
 const useSelector = useAppSelector;
-const useDispatch = () => useAppDispatch();
 
-export { dispatch, store, useDispatch, useSelector };
+export { store, useDispatch, useSelector };
+export default store; // Optionally export store as default

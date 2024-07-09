@@ -1,13 +1,13 @@
 import JWT from "jsonwebtoken";
 
 const userAuth = async (req, res, next) => {
-    const authHeader = req?.headers?.authorization;
+    const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader?.startsWith("Bearer")) {
-        next("Authentication failed");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return next("Authentication failed");
     }
 
-    const token = authHeader?.split(" ")[1];
+    const token = authHeader.split(" ")[1];
 
     try {
         const userToken = JWT.verify(token, process.env.JWT_SECRET_KEY);
@@ -18,7 +18,7 @@ const userAuth = async (req, res, next) => {
 
         next();
     } catch (error) {
-        console.log(error);
+        console.error("JWT verification error:", error.message);
         next("Authentication failed");
     }
 };

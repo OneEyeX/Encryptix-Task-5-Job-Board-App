@@ -10,5 +10,17 @@ import Navbar from "./Navbar";
 import SignUp from "./SignUp";
 import TextInput from "./TextInput";
 
-export { CompanyCard, CustomButton, Footer, Header, JobCard, JobTypes, ListBox, Loading, Navbar, SignUp, TextInput };
+export {
+    CompanyCard,
+    CustomButton,
+    Footer,
+    Header,
+    JobCard,
+    JobTypes,
+    ListBox,
+    Loading,
+    Navbar,
+    SignUp,
+    TextInput
+};
 
