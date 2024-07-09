@@ -130,7 +130,7 @@ const JobDetail = () => {
                   </p>
                 </div>
                 <div className='bg-[#f9cdff] w-40 h-16 px-6 rounded-lg flex flex-col items-center justify-center'>
-                  <span className='text-sm'>Years. of Experience</span>
+                  <span className='text-sm'>Yr. of Experience</span>
                   <p className='text-lg font-semibold text-gray-700'>
                     {job?.experience}
                   </p>
