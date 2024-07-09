@@ -1,11 +1,14 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { FiPhoneCall } from "react-icons/fi";
 import { HiLocationMarker } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
-import { CustomButton, TextInput } from "../components";
+import { NoProfile } from "../assets";
+import { CustomButton, Loading, TextInput } from "../components";
+import { Login } from "../redux/userSlice";
+import { apiRequest, handleFileUpload } from "../utils";
 
 const UserForm = ({ open, setOpen }) => {
   const { user } = useSelector((state) => state.user);
@@ -17,13 +20,44 @@ const UserForm = ({ open, setOpen }) => {
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    defaultValues: { ...user?.user },
+    defaultValues: { ...user },
   });
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
   const [uploadCv, setUploadCv] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const uri = profileImage &&(await 
+        handleFileUpload(profileImage)
+      );
+      const newData = uri? { ...data,profileUrl:uri}: data;
+      const res = await apiRequest({
+        url:"/users/update-user",
+        token:user?.token,
+        data:newData,
+        method:'PUT',
+      });
+      if (res) {
+        const newData ={
+          token:res?.token,
+          ...res?.user
+        };
+        // dispatch(Login(res));
+        dispatch(Login(newData));
+        localStorage.setItem('userInfo', JSON.stringify(newData));
+        window.location.reload();
+        // console.log(newData);
+        // console.log(res);
+      }
+      setIsSubmitting(false);
+    } catch (error) {
+      console.log(error);
+      setIsSubmitting(false);
+    }
+  };
 
   const closeModal = () => setOpen(false);
 
@@ -183,11 +217,14 @@ const UserForm = ({ open, setOpen }) => {
                     </div>
 
                     <div className='mt-4'>
-                      <CustomButton
+                      {isSubmitting?(
+                        <Loading/>
+                      )
+                      :(<CustomButton
                         type='submit'
                         containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
                         title={"Submit"}
-                      />
+                      />)}
                     </div>
                   </form>
                 </Dialog.Panel>
@@ -243,7 +280,7 @@ const UserProfile = () => {
 
             <div className='w-full md:w-1/3 h-44'>
               <img
-                src={userInfo?.profileUrl}
+                src={userInfo?.profileUrl || NoProfile}
                 alt={userInfo?.firstName}
                 className='w-full h-48 object-contain rounded-lg'
               />

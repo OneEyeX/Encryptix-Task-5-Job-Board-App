@@ -61,7 +61,11 @@ const CompnayForm = ({ open, setOpen }) => {
           status: "success",
           message: res.message,
         });
-        dispatch(Login(data));
+        const newData ={
+          token:res?.token,
+          ...res?.user
+        };
+        dispatch(Login(newData));
         localStorage.setItem("userInfo",JSON.stringify(data));
 
         setTimeout(()=>{
@@ -79,7 +83,7 @@ const CompnayForm = ({ open, setOpen }) => {
 
   return (
     <>
-      <Transition appear show={open ?? false} as={Fragment}>
+      <Transition appear show={open || false} as={Fragment}>
         <Dialog as='div' className='relative z-50' onClose={closeModal}>
           <Transition.Child
             as={Fragment}

@@ -29,7 +29,8 @@ export const updateUser = async (req, res, next) => {
             email,
             contact,
             location,
-            profileUrl,
+            // profileUrl,
+            profileUrl: profileUrl.secure_url || profileUrl.url, // Use only the URL part of the profileUrl object
             jobTitle,
             about,
             _id: id,
