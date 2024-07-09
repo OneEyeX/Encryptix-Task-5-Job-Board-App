@@ -2,7 +2,7 @@ import React from "react";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import { CiLocationOn } from "react-icons/ci";
 import { HeroImage } from "../assets";
-import { popularSearch } from "../utils/data";
+// import { popularSearch } from "../utils/data";
 import CustomButton from "./CustomButton";
 
 const SearchInput = ({ placeholder, icon, value, setValue, styles }) => {
@@ -44,9 +44,8 @@ const Header = ({
   return (
     <div className='bg-[#f7fdfd]'>
       <div
-        className={`container mx-auto px-5 ${
-          type ? "h-[500px]" : "h-[350px]"
-        } flex items-center relative`}
+        className={`container mx-auto px-5 ${type ? "h-[500px]" : "h-[350px]"
+          } flex items-center relative`}
       >
         <div className='w-full z-10'>
           <div className='mb-8'>
@@ -79,7 +78,7 @@ const Header = ({
             </div>
           </div>
 
-          {type && (
+          {/* {type && (
             <div className='w-full lg:1/2 flex flex-wrap gap-3 md:gap-6 py-10 md:py-14'>
               {popularSearch.map((search, index) => (
                 <span
@@ -90,7 +89,7 @@ const Header = ({
                 </span>
               ))}
             </div>
-          )}
+          )} */}
         </div>
 
         <div className='w-1/3 h-full absolute top-24 md:-top-6 lg:-top-14 right-16 2xl:right-[18rem]'>

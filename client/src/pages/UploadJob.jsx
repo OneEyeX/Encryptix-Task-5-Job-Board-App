@@ -5,7 +5,7 @@ import { CustomButton, JobCard, JobTypes, Loading, TextInput } from "../componen
 import { apiRequest } from "../utils";
 
 const UploadJob = () => {
-  const { user } = useSelector((state) => state.user); 
+  const { user } = useSelector((state) => state.user);
   // const userId = user._id; // Check if `user` is defined first
   console.log(user);
   const {
@@ -24,7 +24,7 @@ const UploadJob = () => {
   const [jobType, setJobType] = useState("Full-Time");
   const [isLoading, setIsLoading] = useState(false);
   const [recentPost, setRecentPost] = useState([]);
-  
+
 
   const onSubmit = async (data) => {
     setIsLoading(true);
@@ -37,13 +37,13 @@ const UploadJob = () => {
     try {
       const res = await apiRequest({
         url: "/jobs/upload-job",
-        token:user?.token,
+        token: user?.token,
         data: newData,
         method: "POST",
       });
       if (res.status === "failed") {
-        setErrMsg({...res});
-      }else{
+        setErrMsg({ ...res });
+      } else {
         setErrMsg({
           status: "success",
           message: res.message
@@ -59,7 +59,7 @@ const UploadJob = () => {
     }
   };
 
-  const getRecentPost = async()=>{
+  const getRecentPost = async () => {
     try {
       const id = user?._id;
       const res = await apiRequest({
@@ -72,9 +72,9 @@ const UploadJob = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getRecentPost()
-  },[]);
+  }, []);
 
   return (
     <div className='container mx-auto flex flex-col md:flex-row gap-8 2xl:gap-14 bg-[#f7fdfd] px-5'>
@@ -194,16 +194,16 @@ const UploadJob = () => {
               </span>
             )}
             <div className='mt-2'>
-              {isLoading ?(
-                <Loading/>
+              {isLoading ? (
+                <Loading />
               )
-              :(
-                <CustomButton
-                  type='submit'
-                  containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
-                  title='Sumbit'
-                />
-              )}
+                : (
+                  <CustomButton
+                    type='submit'
+                    containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
+                    title='Sumbit'
+                  />
+                )}
             </div>
           </form>
         </div>
@@ -213,7 +213,7 @@ const UploadJob = () => {
 
         <div className='w-full flex flex-wrap gap-6'>
           {recentPost.slice(0, 4).map((job, index) => {
-            const data ={
+            const data = {
               name: user?.name,
               email: user?.email,
               logo: user?.profileUrl,

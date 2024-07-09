@@ -27,7 +27,7 @@ const companySchema = new Schema({
     jobPosts: [{ type: Schema.Types.ObjectId, ref: "Jobs" }],
 });
 
-// middelwares
+// middleWares
 companySchema.pre("save", async function () {
     if (!this.isModified) return;
     const salt = await bcrypt.genSalt(10);
@@ -40,7 +40,7 @@ companySchema.methods.comparePassword = async function (userPassword) {
     return isMatch;
 };
 
-//JSON WEBTOKEN
+//JSON WEB TOKEN
 companySchema.methods.createJWT = function () {
     return JWT.sign({ userId: this._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",

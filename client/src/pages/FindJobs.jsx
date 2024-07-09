@@ -26,7 +26,7 @@ const FindJobs = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const fetchJobs = async ()=>{
+  const fetchJobs = async () => {
     setIsFetching(true);
     const newURL = updateURL({
       pageNum: page,
@@ -40,8 +40,8 @@ const FindJobs = () => {
     });
     try {
       const res = await apiRequest({
-        url : "/jobs" + newURL,
-        method : "GET",
+        url: "/jobs" + newURL,
+        method: "GET",
       });
       setNumPage(res?.numOfPage);
       setRecordCount(res?.totalJobs);
@@ -65,43 +65,43 @@ const FindJobs = () => {
   const filterExperience = async (e) => {
     // setFilterExp(e);
     if (expVal?.includes(e)) {
-      setExpVal(expVal?.filter((el)=> el != e));
+      setExpVal(expVal?.filter((el) => el != e));
     }
-    else{
-      setExpVal([...expVal,e]);
+    else {
+      setExpVal([...expVal, e]);
     }
   };
   // console.log(filterJobTypes);
-  
-  const handleSearchSubmit=async (e)=>{
+
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
     await fetchJobs();
   };
 
-  const handleShowMore=async (e)=>{
+  const handleShowMore = async (e) => {
     e.preventDefault();
-    setPage((prev)=> prev + 1);
+    setPage((prev) => prev + 1);
   };
 
 
 
-  useEffect(() =>{
+  useEffect(() => {
     if (expVal.length > 0) {
       let newExpVal = [];
-      expVal?.map((el)=>{
+      expVal?.map((el) => {
         const newEl = el.split('-');
         newExpVal.push(Number(newEl[0]), Number(newEl[1]));
       });
-      newExpVal?.sort((a,b)=> a - b);
+      newExpVal?.sort((a, b) => a - b);
 
       setFilterExp(`${newExpVal[0]}-${newExpVal[newExpVal?.length - 1]}`);
     }
-    
-  },[expVal]);
 
-  useEffect(()=>{
+  }, [expVal]);
+
+  useEffect(() => {
     fetchJobs();
-  },[sort,filterJobTypes,filterExp,page]);
+  }, [sort, filterJobTypes, filterExp, page]);
   return (
     <div>
       <Header
@@ -197,9 +197,9 @@ const FindJobs = () => {
               return <JobCard job={newJob} key={index} />;
             })}
           </div>
-            {isFetching && (<div className="py-10">
-              <Loading/>
-            </div>)}
+          {isFetching && (<div className="py-10">
+            <Loading />
+          </div>)}
           {numPage > page && !isFetching && (
             <div className='w-full flex items-center justify-center pt-16'>
               <CustomButton

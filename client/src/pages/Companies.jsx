@@ -18,7 +18,7 @@ const Companies = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const fetchCompanies = async ()=>{
+  const fetchCompanies = async () => {
     setIsFetching(true);
     const newURL = updateURL({
       pageNum: page,
@@ -46,11 +46,11 @@ const Companies = () => {
     e.preventDefault();
     await fetchCompanies();
   };
-  const handleShowMore = () => {};
+  const handleShowMore = () => { };
 
   useEffect(() => {
     fetchCompanies();
-  },[page,sort]);
+  }, [page, sort]);
 
   return (
     <div className='w-full'>

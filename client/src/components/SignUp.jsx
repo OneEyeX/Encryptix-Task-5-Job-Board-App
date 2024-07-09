@@ -50,22 +50,22 @@ const SignUp = ({ open, setOpen }) => {
     try {
       const res = await apiRequest({
         url: URL,
-        data:data,
+        data: data,
         method: 'POST',
       });
 
-      if (res?.status ==="failed"){
+      if (res?.status === "failed") {
         setErrMsg(res?.message);
       }
-      else{
+      else {
         setErrMsg("");
-        const data ={
-          token:res?.token,
+        const data = {
+          token: res?.token,
           ...res?.user
         };
         dispatch(Login(data));
         // localStorage.clear();
-        localStorage.setItem("userInfo",JSON.stringify(data));
+        localStorage.setItem("userInfo", JSON.stringify(data));
         window.location.replace(from);
       }
     } catch (error) {
@@ -110,21 +110,19 @@ const SignUp = ({ open, setOpen }) => {
 
                   <div className='w-full flex items-center justify-center py-4 '>
                     <button
-                      className={`flex-1 px-4 py-2 rounded text-sm outline-none ${
-                        accountType === "seeker"
-                          ? "bg-[#1d4fd862] text-blue-900 font-semibold"
-                          : "bg-white border border-blue-400"
-                      }`}
+                      className={`flex-1 px-4 py-2 rounded text-sm outline-none ${accountType === "seeker"
+                        ? "bg-[#1d4fd862] text-blue-900 font-semibold"
+                        : "bg-white border border-blue-400"
+                        }`}
                       onClick={() => setAccountType("seeker")}
                     >
                       User Account
                     </button>
                     <button
-                      className={`flex-1 px-4 py-2 rounded text-sm outline-none ${
-                        accountType !== "seeker"
-                          ? "bg-[#1d4fd862] text-blue-900 font-semibold"
-                          : "bg-white border border-blue-400"
-                      }`}
+                      className={`flex-1 px-4 py-2 rounded text-sm outline-none ${accountType !== "seeker"
+                        ? "bg-[#1d4fd862] text-blue-900 font-semibold"
+                        : "bg-white border border-blue-400"
+                        }`}
                       onClick={() => setAccountType("company")}
                     >
                       Company Account
@@ -149,9 +147,8 @@ const SignUp = ({ open, setOpen }) => {
                     {isRegister && (
                       <div className='w-full flex gap-1 md:gap-2'>
                         <div
-                          className={`${
-                            accountType === "seeker" ? "w-1/2" : "w-full"
-                          }`}
+                          className={`${accountType === "seeker" ? "w-1/2" : "w-full"
+                            }`}
                         >
                           <TextInput
                             name={
@@ -183,8 +180,8 @@ const SignUp = ({ open, setOpen }) => {
                                   ? errors.firstName?.message
                                   : ""
                                 : errors.name
-                                ? errors.name?.message
-                                : ""
+                                  ? errors.name?.message
+                                  : ""
                             }
                           />
                         </div>
@@ -241,7 +238,7 @@ const SignUp = ({ open, setOpen }) => {
                             })}
                             error={
                               errors.cPassword &&
-                              errors.cPassword.type === "validate"
+                                errors.cPassword.type === "validate"
                                 ? errors.cPassword?.message
                                 : ""
                             }

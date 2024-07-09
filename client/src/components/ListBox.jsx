@@ -35,8 +35,7 @@ const ListBox = ({ sort, setSort }) => {
                 <Listbox.Option
                   key={index}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-[#1d4fd830] text-[#1d4ed8]" : "text-gray-900"
+                    `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-[#1d4fd830] text-[#1d4ed8]" : "text-gray-900"
                     }`
                   }
                   value={op}
@@ -44,9 +43,8 @@ const ListBox = ({ sort, setSort }) => {
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
-                        }`}
+                        className={`block truncate ${selected ? "font-medium" : "font-normal"
+                          }`}
                       >
                         {op}
                       </span>

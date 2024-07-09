@@ -17,4 +17,3 @@ export {
     UploadJob,
     UserProfile
 };
-

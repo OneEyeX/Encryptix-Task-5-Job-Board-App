@@ -100,6 +100,7 @@ export const apiRequest = async ({ url, token, data, method, }) => {
 //         console.log(error);
 //     }
 // };
+
 export const handleFileUpload = async (uploadFile) => {
     const formData = new FormData();
     formData.append("file", uploadFile);
@@ -121,6 +122,7 @@ export const handleFileUpload = async (uploadFile) => {
         console.error("File upload error:", error.response ? error.response.data : error.message);
     }
 };
+
 export const updateURL = ({
     pageNum,
     query,
@@ -169,5 +171,4 @@ export const updateURL = ({
     navigate(newURL, { replace: true });
 
     return newURL;
-
 };

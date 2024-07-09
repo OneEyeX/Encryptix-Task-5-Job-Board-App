@@ -30,21 +30,21 @@ const CompnayForm = ({ open, setOpen }) => {
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
   const [uploadCv, setUploadCv] = useState("");
-  const [isLoading,setIsLoading]=useState(false);
-  const [errMsg,setErrMsg]=useState({
-    status:false,
-    message:"",
+  const [isLoading, setIsLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState({
+    status: false,
+    message: "",
   });
-  
+
   const onSubmit = async (data) => {
     setIsLoading(true);
     setErrMsg(null);
-    const uri=profileImage && (await handleFileUpload(profileImage));
-    const newData = uri? { ...data, profileUrl:uri }: data;
+    const uri = profileImage && (await handleFileUpload(profileImage));
+    const newData = uri ? { ...data, profileUrl: uri } : data;
     // console.log(user?.token);
     try {
       const res = await apiRequest({
-        url:"/companies/update-company", 
+        url: "/companies/update-company",
         // token: token,
         token: user?.token,
         data: newData,
@@ -54,23 +54,23 @@ const CompnayForm = ({ open, setOpen }) => {
       setIsLoading(false);
 
       // console.log(res);
-      if (res.status==="failed") {
-        setErrMsg({...res});
-      }else{
+      if (res.status === "failed") {
+        setErrMsg({ ...res });
+      } else {
         setErrMsg({
           status: "success",
           message: res.message,
         });
-        const newData ={
-          token:res?.token,
+        const newData = {
+          token: res?.token,
           ...res?.user
         };
         dispatch(Login(newData));
-        localStorage.setItem("userInfo",JSON.stringify(data));
+        localStorage.setItem("userInfo", JSON.stringify(data));
 
-        setTimeout(()=>{
+        setTimeout(() => {
           window.location.reload();
-        },1500);
+        }, 1500);
       }
     } catch (error) {
       console.log(error);
@@ -191,17 +191,17 @@ const CompnayForm = ({ open, setOpen }) => {
 
                     <div className='mt-4'>
                       {
-                        isLoading ?(
-                          <Loading/>
+                        isLoading ? (
+                          <Loading />
                         )
-                        : 
-                        (
-                        <CustomButton
-                          type='submit'
-                          containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
-                          title={"Submit"}
-                        />
-                      ) 
+                          :
+                          (
+                            <CustomButton
+                              type='submit'
+                              containerStyles='inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-8 py-2 text-sm font-medium text-white hover:bg-[#1d4fd846] hover:text-[#1d4fd8] focus:outline-none '
+                              title={"Submit"}
+                            />
+                          )
                       }
                     </div>
                   </form>
@@ -223,18 +223,18 @@ const CompanyProfile = () => {
   const [openForm, setOpenForm] = useState(false);
 
 
-  const fetchCompany=async()=>{
+  const fetchCompany = async () => {
     setIsLoading(true);
     let id = null;
     if (params.id && params.id !== undefined) {
       id = params.id;
-    }else{
-      id=user?._id;
+    } else {
+      id = user?._id;
     }
 
     try {
       const res = await apiRequest({
-        url:"/companies/get-company/"+id,
+        url: "/companies/get-company/" + id,
         method: "GET",
       });
       console.log("BA3");
@@ -257,7 +257,7 @@ const CompanyProfile = () => {
     // setInfo(companies[id ? id - 1 : 0]);
     fetchCompany();
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-}, []);
+  }, []);
 
   if (isLoading) {
     return <Loading />;

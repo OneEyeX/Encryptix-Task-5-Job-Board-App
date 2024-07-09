@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-// middelwares
+// middlewares
 userSchema.pre("save", async function () {
     if (!this.isModified) return;
     const salt = await bcrypt.genSalt(10);
@@ -50,7 +50,7 @@ userSchema.methods.comparePassword = async function (userPassword) {
     return isMatch;
 };
 
-//JSON WEBTOKEN
+//JSON WEB TOKEN
 userSchema.methods.createJWT = function () {
     return JWT.sign({ userId: this._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",

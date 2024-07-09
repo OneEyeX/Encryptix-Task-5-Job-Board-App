@@ -1,4 +1,4 @@
-import CodeWave from "./codewave.png";
+import OneEyeX from "./OneEyeX.jpg";
 import Facebook from "./facebook.png";
 import Google from "./google.png";
 import HeroImage from "./hero.png";
@@ -12,7 +12,5 @@ import NoProfile from "./userprofile.png";
 import WhatsApp from "./whatsapp.png";
 import Youtube from "./youtube.png";
 
-export {
-  CodeWave, Facebook, Google, HeroImage, Instagram, JobImg, Linkedin, NoProfile, Office, Spotify, Twitter, WhatsApp, Youtube
-};
+export { Facebook, Google, HeroImage, Instagram, JobImg, Linkedin, NoProfile, Office, OneEyeX, Spotify, Twitter, WhatsApp, Youtube };
 
